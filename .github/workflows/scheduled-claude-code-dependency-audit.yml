@@ -64,6 +64,8 @@ jobs:
       - name: Claude Dependency Analysis & Update
         if: steps.check-outdated.outputs.has_outdated == 'true' || steps.security-audit.outputs.vulnerabilities != '0'
         uses: anthropics/claude-code-action@beta
+        env:
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           model: claude-opus-4-5-20251101

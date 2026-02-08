@@ -1,34 +1,34 @@
 ---
 name: graphql-schema
-description: GraphQL queries, mutations, and code generation patterns. Use when creating GraphQL operations, working with Apollo Client, or generating types.
+description: GraphQL查询、mutation和代码生成模式。在创建GraphQL操作、使用Apollo Client或生成类型时使用。
 ---
 
-# GraphQL Schema Patterns
+# GraphQL Schema 模式
 
-## Core Rules
+## 核心规则
 
-1. **NEVER inline `gql` literals** - Create `.gql` files
-2. **ALWAYS run codegen** after creating/modifying `.gql` files
-3. **ALWAYS add `onError` handler** to mutations
-4. **Use generated hooks** - Never write raw Apollo hooks
+1. **从不内联`gql`字面量** - 创建`.gql`文件
+2. **总是运行codegen** - 在创建/修改`.gql`文件后
+3. **总是添加`onError`处理器** - 到mutation中
+4. **使用生成的hook** - 永远不要手写Apollo hook
 
-## File Structure
+## 文件结构
 
 ```
 src/
 ├── components/
 │   └── ItemList/
 │       ├── ItemList.tsx
-│       ├── GetItems.gql           # Query definition
-│       └── GetItems.generated.ts  # Auto-generated (don't edit)
+│       ├── GetItems.gql           # Query定义
+│       └── GetItems.generated.ts  # 自动生成（不要编辑）
 └── graphql/
     └── mutations/
-        └── CreateItem.gql         # Shared mutations
+        └── CreateItem.gql         # 共享mutation
 ```
 
-## Creating a Query
+## 创建一个Query
 
-### Step 1: Create .gql file
+### 第1步：创建.gql文件
 
 ```graphql
 # src/components/ItemList/GetItems.gql
@@ -42,13 +42,13 @@ query GetItems($limit: Int, $offset: Int) {
 }
 ```
 
-### Step 2: Run codegen
+### 第2步：运行codegen
 
 ```bash
 npm run gql:typegen
 ```
 
-### Step 3: Import and use generated hook
+### 第3步：导入和使用生成的hook
 
 ```typescript
 import { useGetItemsQuery } from './GetItems.generated';
@@ -66,9 +66,9 @@ const ItemList = () => {
 };
 ```
 
-## Creating a Mutation
+## 创建一个Mutation
 
-### Step 1: Create .gql file
+### 第1步：创建.gql文件
 
 ```graphql
 # src/graphql/mutations/CreateItem.gql
@@ -81,30 +81,30 @@ mutation CreateItem($input: CreateItemInput!) {
 }
 ```
 
-### Step 2: Run codegen
+### 第2步：运行codegen
 
 ```bash
 npm run gql:typegen
 ```
 
-### Step 3: Use with REQUIRED error handling
+### 第3步：使用**必需的**错误处理
 
 ```typescript
 import { useCreateItemMutation } from 'graphql/mutations/CreateItem.generated';
 
 const CreateItemForm = () => {
   const [createItem, { loading }] = useCreateItemMutation({
-    // Success handling
+    // 成功处理
     onCompleted: (data) => {
-      toast.success({ title: 'Item created' });
+      toast.success({ title: '项目已创建' });
       navigation.goBack();
     },
-    // ERROR HANDLING IS REQUIRED
+    // 错误处理是必需的
     onError: (error) => {
       console.error('createItem failed:', error);
-      toast.error({ title: 'Failed to create item' });
+      toast.error({ title: '创建项目失败' });
     },
-    // Cache update
+    // 缓存更新
     update: (cache, { data }) => {
       if (data?.createItem) {
         cache.modify({
@@ -122,30 +122,30 @@ const CreateItemForm = () => {
       isDisabled={!isValid || loading}
       isLoading={loading}
     >
-      Create
+      创建
     </Button>
   );
 };
 ```
 
-## Mutation UI Requirements
+## Mutation UI 要求
 
-**CRITICAL: Every mutation trigger must:**
+**关键：每个mutation触发器必须：**
 
-1. **Be disabled during mutation** - Prevent double-clicks
-2. **Show loading state** - Visual feedback
-3. **Have onError handler** - User knows it failed
-4. **Show success feedback** - User knows it worked
+1. **在mutation期间被禁用** - 防止双击
+2. **显示加载状态** - 视觉反馈
+3. **有onError处理器** - 用户知道它失败了
+4. **显示成功反馈** - 用户知道它成功了
 
 ```typescript
-// CORRECT - Complete mutation pattern
+// 正确 - 完整的mutation模式
 const [submit, { loading }] = useSubmitMutation({
   onError: (error) => {
     console.error('submit failed:', error);
-    toast.error({ title: 'Save failed' });
+    toast.error({ title: '保存失败' });
   },
   onCompleted: () => {
-    toast.success({ title: 'Saved' });
+    toast.success({ title: '已保存' });
   },
 });
 
@@ -154,72 +154,72 @@ const [submit, { loading }] = useSubmitMutation({
   isDisabled={!isValid || loading}
   isLoading={loading}
 >
-  Submit
+  提交
 </Button>
 ```
 
-## Query Options
+## Query选项
 
-### Fetch Policies
+### 获取策略
 
-| Policy | Use When |
-|--------|----------|
-| `cache-first` | Data rarely changes |
-| `cache-and-network` | Want fast + fresh (default) |
-| `network-only` | Always need latest |
-| `no-cache` | Never cache (rare) |
+| 策略                | 使用场景                  |
+| ------------------- | ------------------------- |
+| `cache-first`       | 数据很少改变              |
+| `cache-and-network` | 想要快速+新鲜数据（默认） |
+| `network-only`      | 总是需要最新的            |
+| `no-cache`          | 从不缓存（罕见）          |
 
-### Common Options
+### 常见选项
 
 ```typescript
 useGetItemsQuery({
   variables: { id: itemId },
 
-  // Fetch strategy
-  fetchPolicy: 'cache-and-network',
+  // 获取策略
+  fetchPolicy: "cache-and-network",
 
-  // Re-render on network status changes
+  // 在网络状态更改时重新渲染
   notifyOnNetworkStatusChange: true,
 
-  // Skip if condition not met
+  // 如果条件不满足则跳过
   skip: !itemId,
 
-  // Poll for updates
+  // 轮询更新
   pollInterval: 30000,
 });
 ```
 
-## Optimistic Updates
+## 乐观更新
 
-For instant UI feedback:
+用于即时UI反馈：
 
 ```typescript
 const [toggleFavorite] = useToggleFavoriteMutation({
   optimisticResponse: {
     toggleFavorite: {
-      __typename: 'Item',
+      __typename: "Item",
       id: itemId,
       isFavorite: !currentState,
     },
   },
   onError: (error) => {
-    // Rollback happens automatically
-    console.error('toggleFavorite failed:', error);
-    toast.error({ title: 'Failed to update' });
+    // 回滚自动发生
+    console.error("toggleFavorite failed:", error);
+    toast.error({ title: "更新失败" });
   },
 });
 ```
 
-### When NOT to Use Optimistic Updates
+### 何时不使用乐观更新
 
-- Operations that can fail validation
-- Operations with server-generated values
-- Destructive operations (delete)
-- Operations affecting other users
+- 可能因验证失败的操作
+- 包含服务器生成值的操作
+- 破坏性操作（删除）
+- 影响其他用户的操作
 
-## Fragments
+## 片段
 
-For reusable field selections:
+用于可重用的字段选择：
 
 ```graphql
 # src/graphql/fragments/ItemFields.gql
@@ -232,7 +232,7 @@ fragment ItemFields on Item {
 }
 ```
 
-Use in queries:
+在queries中使用：
 
 ```graphql
 query GetItems {
@@ -242,51 +242,51 @@ query GetItems {
 }
 ```
 
-## Anti-Patterns
+## 反面模式
 
 ```typescript
-// WRONG - Inline gql
+// 错误 - 内联gql
 const GET_ITEMS = gql`
   query GetItems { items { id } }
 `;
 
-// CORRECT - Use .gql file + generated hook
+// 正确 - 使用.gql文件+生成的hook
 import { useGetItemsQuery } from './GetItems.generated';
 
 
-// WRONG - No error handler
+// 错误 - 没有错误处理器
 const [mutate] = useMutation(MUTATION);
 
-// CORRECT - Always handle errors
+// 正确 - 总是处理错误
 const [mutate] = useMutation(MUTATION, {
   onError: (error) => {
     console.error('mutation failed:', error);
-    toast.error({ title: 'Operation failed' });
+    toast.error({ title: '操作失败' });
   },
 });
 
 
-// WRONG - Button not disabled during mutation
-<Button onPress={submit}>Submit</Button>
+// 错误 - mutation期间按钮未禁用
+<Button onPress={submit}>提交</Button>
 
-// CORRECT - Disabled and loading
+// 正确 - 禁用并显示加载
 <Button onPress={submit} isDisabled={loading} isLoading={loading}>
-  Submit
+  提交
 </Button>
 ```
 
-## Codegen Commands
+## Codegen命令
 
 ```bash
-# Generate types from .gql files
+# 从.gql文件生成类型
 npm run gql:typegen
 
-# Download schema + generate types
+# 下载schema+生成类型
 npm run sync-types
 ```
 
-## Integration with Other Skills
+## 与其他技能的集成
 
-- **react-ui-patterns**: Loading/error/empty states for queries
-- **testing-patterns**: Mock generated hooks in tests
-- **formik-patterns**: Mutation submission patterns
+- **react-ui-patterns**: 用于queries的加载/错误/空状态
+- **testing-patterns**: 在测试中模拟生成的hook
+- **formik-patterns**: Mutation提交模式

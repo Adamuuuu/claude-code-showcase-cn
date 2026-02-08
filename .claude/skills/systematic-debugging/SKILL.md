@@ -1,150 +1,152 @@
 ---
 name: systematic-debugging
-description: Four-phase debugging methodology with root cause analysis. Use when investigating bugs, fixing test failures, or troubleshooting unexpected behavior. Emphasizes NO FIXES WITHOUT ROOT CAUSE FIRST.
+description: 四阶段调试方法论和根本原因分析。在调查bug、修复测试失败或排查意外行为时使用。强调在根本原因分析之前不要进行修复。
 ---
 
-# Systematic Debugging
+# 系统化调试
 
-## Core Principle
+## 核心原则
 
-**NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST.**
+**在进行任何修复前，首先进行根本原因调查。**
 
-Never apply symptom-focused patches that mask underlying problems. Understand WHY something fails before attempting to fix it.
+永远不要应用只是掩盖问题的症状补丁。在尝试修复之前，先了解为什么会失败。
 
-## The Four-Phase Framework
+## 四阶段框架
 
-### Phase 1: Root Cause Investigation
+### 第1阶段：根本原因调查
 
-Before touching any code:
+在接触任何代码之前：
 
-1. **Read error messages thoroughly** - Every word matters
-2. **Reproduce the issue consistently** - If you can't reproduce it, you can't verify a fix
-3. **Examine recent changes** - What changed before this started failing?
-4. **Gather diagnostic evidence** - Logs, stack traces, state dumps
-5. **Trace data flow** - Follow the call chain to find where bad values originate
+1. **彻底阅读错误消息** - 每个词都很重要
+2. **一致地重现问题** - 如果无法重现，就无法验证修复
+3. **检查最近的更改** - 在此开始失败之前改变了什么？
+4. **收集诊断证据** - 日志、堆栈跟踪、状态转储
+5. **追踪数据流** - 遵循调用链以找到坏值的来源
 
-**Root Cause Tracing Technique:**
-```
-1. Observe the symptom - Where does the error manifest?
-2. Find immediate cause - Which code directly produces the error?
-3. Ask "What called this?" - Map the call chain upward
-4. Keep tracing up - Follow invalid data backward through the stack
-5. Find original trigger - Where did the problem actually start?
-```
-
-**Key principle:** Never fix problems solely where errors appear—always trace to the original trigger.
-
-### Phase 2: Pattern Analysis
-
-1. **Locate working examples** - Find similar code that works correctly
-2. **Compare implementations completely** - Don't just skim
-3. **Identify differences** - What's different between working and broken?
-4. **Understand dependencies** - What does this code depend on?
-
-### Phase 3: Hypothesis and Testing
-
-Apply the scientific method:
-
-1. **Formulate ONE clear hypothesis** - "The error occurs because X"
-2. **Design minimal test** - Change ONE variable at a time
-3. **Predict the outcome** - What should happen if hypothesis is correct?
-4. **Run the test** - Execute and observe
-5. **Verify results** - Did it behave as predicted?
-6. **Iterate or proceed** - Refine hypothesis if wrong, implement if right
-
-### Phase 4: Implementation
-
-1. **Create failing test case** - Captures the bug behavior
-2. **Implement single fix** - Address root cause, not symptoms
-3. **Verify test passes** - Confirms fix works
-4. **Run full test suite** - Ensure no regressions
-5. **If fix fails, STOP** - Re-evaluate hypothesis
-
-**Critical rule:** If THREE or more fixes fail consecutively, STOP. This signals architectural problems requiring discussion, not more patches.
-
-## Red Flags - Process Violations
-
-Stop immediately if you catch yourself thinking:
-
-- "Quick fix for now, investigate later"
-- "One more fix attempt" (after multiple failures)
-- "This should work" (without understanding why)
-- "Let me just try..." (without hypothesis)
-- "It works on my machine" (without investigating difference)
-
-## Warning Signs of Deeper Problems
-
-**Consecutive fixes revealing new problems in different areas** indicates architectural issues:
-
-- Stop patching
-- Document what you've found
-- Discuss with team before proceeding
-- Consider if the design needs rethinking
-
-## Common Debugging Scenarios
-
-### Test Failures
+**根本原因追踪技术：**
 
 ```
-1. Read the FULL error message and stack trace
-2. Identify which assertion failed and why
-3. Check test setup - is the test environment correct?
-4. Check test data - are mocks/fixtures correct?
-5. Trace to the source of unexpected value
+1. 观察症状 - 错误在哪里显示？
+2. 找到直接原因 - 哪个代码直接产生错误？
+3. 询问"谁调用了这个？" - 向上映射调用链
+4. 继续向上追踪 - 在堆栈中向后遵循无效数据
+5. 找到原始触发器 - 问题实际上在哪里开始？
 ```
 
-### Runtime Errors
+**关键原则：** 永远不要仅在错误出现的地方修复问题——总是追踪到原始触发器。
+
+### 第2阶段：模式分析
+
+1. **定位工作示例** - 找到类似的代码可以正确工作
+2. **完全比较实现** - 不只是浏览
+3. **识别差异** - 工作代码和破坏代码之间有什么不同？
+4. **了解依赖关系** - 这个代码依赖什么？
+
+### 第3阶段：假设和测试
+
+应用科学方法：
+
+1. **表述一个清晰的假设** - "错误发生是因为X"
+2. **设计最小测试** - 一次改变一个变量
+3. **预测结果** - 如果假设正确会发生什么？
+4. **运行测试** - 执行并观察
+5. **验证结果** - 它的行为是否与预测一致？
+6. **迭代或继续** - 如果错误则改进假设，如果正确则实施
+
+### 第4阶段：实施
+
+1. **创建失败的测试用例** - 捕获bug行为
+2. **实施单一修复** - 解决根本原因，而不是症状
+3. **验证测试通过** - 确认修复有效
+4. **运行完整测试套件** - 确保没有回归
+5. **如果修复失败，停止** - 重新评估假设
+
+**关键规则：** 如果连续**三次或更多**修复失败，停止。这表明存在需要讨论的架构问题，而不是更多补丁。
+
+## 红旗 - 流程违反
+
+如果你发现自己在想，立即停止：
+
+- "先快速修复，之后再调查"
+- "再尝试一次修复"（在多次失败之后）
+- "这应该行得通"（没有理解原因）
+- "让我试试..."（没有假设）
+- "在我的机器上可以工作"（没有调查差异）
+
+## 更深层问题的警告信号
+
+**连续修复在不同区域揭示新问题**表明存在架构问题：
+
+- 停止打补丁
+- 记录您发现的内容
+- 在继续前与团队讨论
+- 考虑设计是否需要重新思考
+
+## 常见调试场景
+
+### 测试失败
 
 ```
-1. Capture the full stack trace
-2. Identify the line that throws
-3. Check what values are undefined/null
-4. Trace backward to find where bad value originated
-5. Add validation at the source
+1. 阅读完整的错误消息和堆栈跟踪
+2. 识别哪个断言失败和原因
+3. 检查测试设置 - 测试环境正确吗？
+4. 检查测试数据 - 模拟/fixture正确吗？
+5. 追踪到意外值的来源
 ```
 
-### "It worked before"
+### 运行时错误
 
 ```
-1. Use git bisect to find the breaking commit
-2. Compare the change with previous working version
-3. Identify what assumption changed
-4. Fix at the source of the assumption violation
+1. 捕获完整的堆栈跟踪
+2. 识别抛出的行
+3. 检查什么值是undefined/null
+4. 向后追踪以找到坏值的来源
+5. 在源头添加验证
 ```
 
-### Intermittent Failures
+### "它之前能工作"
 
 ```
-1. Look for race conditions
-2. Check for shared mutable state
-3. Examine async operation ordering
-4. Look for timing dependencies
-5. Add deterministic waits or proper synchronization
+1. 使用git bisect找到破坏提交
+2. 将更改与先前的工作版本进行比较
+3. 识别什么假设改变了
+4. 在假设违反的来源处修复
 ```
 
-## Debugging Checklist
+### 间歇性失败
 
-Before claiming a bug is fixed:
+```
+1. 查找竞态条件
+2. 检查共享可变状态
+3. 检查异步操作顺序
+4. 查找时序依赖
+5. 添加确定性等待或正确的同步
+```
 
-- [ ] Root cause identified and documented
-- [ ] Hypothesis formed and tested
-- [ ] Fix addresses root cause, not symptoms
-- [ ] Failing test created that reproduces bug
-- [ ] Test now passes with fix
-- [ ] Full test suite passes
-- [ ] No "quick fix" rationalization used
-- [ ] Fix is minimal and focused
+## 调试检查清单
 
-## Success Metrics
+在声称bug已修复前：
 
-Systematic debugging achieves ~95% first-time fix rate vs ~40% with ad-hoc approaches.
+- [ ] 根本原因已识别并记录
+- [ ] 假设已形成并测试
+- [ ] 修复解决根本原因，而不是症状
+- [ ] 创建了重现bug的失败测试
+- [ ] 现在测试通过修复
+- [ ] 完整测试套件通过
+- [ ] 未使用"快速修复"合理化
+- [ ] 修复是最小化和集中的
 
-Signs you're doing it right:
-- Fixes don't create new bugs
-- You can explain WHY the bug occurred
-- Similar bugs don't recur
-- Code is better after the fix, not just "working"
+## 成功指标
 
-## Integration with Other Skills
+系统化调试实现约95%的首次修复率，而临时方法约40%。
 
-- **testing-patterns**: Create test that reproduces the bug before fixing
+您做对的迹象：
+
+- 修复不会产生新bug
+- 您可以解释为什么会发生bug
+- 类似的bug不会再次出现
+- 修复后代码更好，而不仅仅是"可以工作"
+
+## 与其他技能的集成
+
+- **testing-patterns**: 在修复前创建重现bug的测试

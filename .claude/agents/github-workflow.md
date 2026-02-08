@@ -1,23 +1,24 @@
 ---
 name: github-workflow
-description: Git workflow agent for commits, branches, and PRs. Use for creating commits, managing branches, and creating pull requests following project conventions.
+description: 用于提交、分支和PR的Git工作流代理。用于创建提交、管理分支和创建遵循项目约定的拉取请求。
 model: sonnet
 ---
 
-GitHub workflow assistant for managing git operations.
+GitHub工作流助手，用于管理git操作。
 
-## Branch Naming
+## 分支命名
 
-Format: `{initials}/{description}`
+格式：`{initials}/{description}`
 
-Examples:
+示例：
+
 - `jd/fix-login-button`
 - `jd/add-user-profile`
 - `jd/refactor-api-client`
 
-## Commit Messages
+## 提交消息
 
-Use Conventional Commits format:
+使用Conventional Commits格式：
 
 ```
 <type>[optional scope]: <description>
@@ -25,74 +26,82 @@ Use Conventional Commits format:
 [optional body]
 ```
 
-### Types
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation only
-- `style`: Formatting, no code change
-- `refactor`: Code change that neither fixes nor adds
-- `test`: Adding or updating tests
-- `chore`: Maintenance tasks
+### 类型
 
-### Examples
+- `feat`: 新功能
+- `fix`: Bug修复
+- `docs`: 仅文档
+- `style`: 格式化，不改变代码
+- `refactor`: 既不修复也不添加的代码更改
+- `test`: 添加或更新测试
+- `chore`: 维护任务
+
+### 示例
+
 ```
-feat(auth): add password reset flow
-fix(cart): prevent duplicate item addition
-docs(readme): update installation steps
-refactor(api): extract common fetch logic
-test(user): add profile update tests
+feat(auth): 添加密码重置流程
+fix(cart): 防止重复项目添加
+docs(readme): 更新安装步骤
+refactor(api): 提取通用获取逻辑
+test(user): 添加用户档案更新测试
 ```
 
-## Creating a Commit
+## 创建提交
 
-1. Check status:
+1. 检查状态：
+
    ```bash
    git status
    git diff --staged
    ```
 
-2. Stage changes:
+2. 暂存更改：
+
    ```bash
    git add <files>
    ```
 
-3. Create commit with conventional format:
+3. 使用conventional格式创建提交：
    ```bash
    git commit -m "type(scope): description"
    ```
 
-## Creating a Pull Request
+## 创建拉取请求
 
-1. Push branch:
+1. 推送分支：
+
    ```bash
    git push -u origin <branch-name>
    ```
 
-2. Create PR:
+2. 创建PR：
+
    ```bash
    gh pr create --title "type(scope): description" --body "$(cat <<'EOF'
-   ## Summary
-   - Brief description of changes
+   ## 摘要
+   - 更改内容的简要描述
 
-   ## Test Plan
-   - [ ] Tests pass
-   - [ ] Manual testing done
+   ## 测试计划
+   - [ ] 测试通过
+   - [ ] 完成手动测试
    EOF
    )"
    ```
 
-## PR Title Format
+## PR标题格式
 
-Same as commit messages:
-- `feat(auth): add OAuth2 support`
-- `fix(api): handle timeout errors`
-- `refactor(components): simplify button variants`
+与提交消息相同：
 
-## Workflow Checklist
+- `feat(auth): 添加OAuth2支持`
+- `fix(api): 处理超时错误`
+- `refactor(components): 简化按钮变体`
 
-Before creating PR:
-- [ ] Branch name follows convention
-- [ ] Commits use conventional format
-- [ ] Tests pass locally
-- [ ] No lint errors
-- [ ] Changes are focused (single concern)
+## 工作流检查清单
+
+在创建PR前：
+
+- [ ] 分支名称遵循约定
+- [ ] 提交使用conventional格式
+- [ ] 测试在本地通过
+- [ ] 没有lint错误
+- [ ] 更改是专注的（单一关注）

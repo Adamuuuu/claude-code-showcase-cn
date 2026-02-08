@@ -1,31 +1,31 @@
 ---
-description: Review a pull request using project standards
+description: 使用项目标准审查拉取请求
 allowed-tools: Read, Glob, Grep, Bash(git:*), Bash(gh:*)
 ---
 
-# PR Review
+# PR审查
 
-Review the pull request: $ARGUMENTS
+审查拉取请求：$ARGUMENTS
 
-## Instructions
+## 说明
 
-1. **Get PR information**:
-   - Run `gh pr view $ARGUMENTS` to get PR details
-   - Run `gh pr diff $ARGUMENTS` to see changes
+1. **获取PR信息**：
+   - 运行`gh pr view $ARGUMENTS`获取PR详情
+   - 运行`gh pr diff $ARGUMENTS`查看更改
 
-2. **Read review standards**:
-   - Read `.claude/agents/code-reviewer.md` for the review checklist
+2. **读取审查标准**：
+   - 读取`.claude/agents/code-reviewer.md`获取审查检查清单
 
-3. **Apply the checklist** to all changed files:
-   - TypeScript strict mode compliance
-   - Error handling patterns
-   - Loading/error/empty states
-   - Test coverage
-   - Documentation updates
+3. **将检查清单应用**到所有更改的文件：
+   - TypeScript严格模式兼容性
+   - 错误处理模式
+   - 加载/错误/空状态
+   - 测试覆盖率
+   - 文档更新
 
-4. **Provide structured feedback**:
-   - **Critical**: Must fix before merge
-   - **Warning**: Should fix
-   - **Suggestion**: Nice to have
+4. **提供结构化反馈**：
+   - **关键**：合并前必须修复
+   - **警告**：应该修复
+   - **建议**：很好有
 
-5. **Post review comments** using `gh pr comment`
+5. **发布审查评论**使用`gh pr comment`

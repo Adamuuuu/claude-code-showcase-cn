@@ -1,80 +1,115 @@
-# Project Name
+# 项目名称
 
-> This is an example CLAUDE.md file showing how to configure Claude Code for your project.
+> 这是一个示例CLAUDE.md文件，展示如何为你的项目配置Claude Code。
 
-## Quick Facts
+## 快速事实
 
-- **Stack**: React, TypeScript, Node.js
-- **Test Command**: `npm test`
-- **Lint Command**: `npm run lint`
-- **Build Command**: `npm run build`
+- **技术栈**: React、TypeScript、Node.js
+- **测试命令**: `npm test`
+- **Lint命令**: `npm run lint`
+- **构建命令**: `npm run build`
 
-## Key Directories
+## 关键目录
 
-- `src/components/` - React components
-- `src/hooks/` - Custom React hooks
-- `src/utils/` - Utility functions
-- `src/api/` - API client code
-- `tests/` - Test files
+- `src/components/` - React组件
+- `src/hooks/` - 自定义React hooks
+- `src/utils/` - 工具函数
+- `src/api/` - API客户端代码
+- `tests/` - 测试文件
 
-## Code Style
+## 代码风格
 
-- TypeScript strict mode enabled
-- Prefer `interface` over `type` (except unions/intersections)
-- No `any` - use `unknown` instead
-- Use early returns, avoid nested conditionals
-- Prefer composition over inheritance
+- TypeScript严格模式已启用
+- 优先使用`interface`而非`type`（除了unions/intersections）
+- 不使用`any` - 使用`unknown`替代
+- 使用早期返回，避免嵌套条件
+- 优先选择组合而非继承
 
-## Git Conventions
+## Git约定
 
-- **Branch naming**: `{initials}/{description}` (e.g., `jd/fix-login`)
-- **Commit format**: Conventional Commits (`feat:`, `fix:`, `docs:`, etc.)
-- **PR titles**: Same as commit format
+- **分支命名**: `{initials}/{description}`（例如：`jd/fix-login`）
+- **提交格式**: Conventional Commits（`feat:`、`fix:`、`docs:`等）
+- **PR标题**: 与提交格式相同
 
-## Critical Rules
+## 关键规则
 
-### Error Handling
-- NEVER swallow errors silently
-- Always show user feedback for errors
-- Log errors for debugging
+### 错误处理
 
-### UI States
-- Always handle: loading, error, empty, success states
-- Show loading ONLY when no data exists
-- Every list needs an empty state
+- 绝对不要无声地吞掉错误
+- 始终为错误显示用户反馈
+- 记录错误以供调试
 
-### Mutations
-- Disable buttons during async operations
-- Show loading indicator on buttons
-- Always have onError handler with user feedback
+### UI状态
 
-## Testing
+- 总是处理：加载、错误、空白、成功状态
+- 仅当不存在数据时显示加载
+- 每个列表都需要一个空状态
 
-- Write failing test first (TDD)
-- Use factory pattern: `getMockX(overrides)`
-- Test behavior, not implementation
-- Run tests before committing
+### 变更
 
-## Skill Activation
+- 在异步操作期间禁用按钮
+- 在按钮上显示加载指示器
+- 始终有onError处理程序和用户反馈
 
-Before implementing ANY task, check if relevant skills apply:
+## 测试
 
-- Creating tests → `testing-patterns` skill
-- Building forms → `formik-patterns` skill
-- GraphQL operations → `graphql-schema` skill
-- Debugging issues → `systematic-debugging` skill
-- UI components → `react-ui-patterns` skill
+- 首先编写失败的测试（TDD）
+- 使用工厂模式：`getMockX(overrides)`
+- 测试行为，而非实现
+- 提交前运行测试
 
-## Common Commands
+## 技能激活
+
+在实现任何任务之前，检查是否适用相关技能：
+
+- 创建测试 → `testing-patterns`技能
+- 构建表单 → `formik-patterns`技能
+- GraphQL操作 → `graphql-schema`技能
+- 调试问题 → `systematic-debugging`技能
+- UI组件 → `react-ui-patterns`技能
+
+## 常见命令
 
 ```bash
-# Development
-npm run dev          # Start dev server
-npm test             # Run tests
-npm run lint         # Run linter
-npm run typecheck    # Check types
+# 开发
+npm run dev          # 启动开发服务器
+npm test             # 运行测试
+npm run lint         # 运行linter
+npm run typecheck    # 检查类型
 
 # Git
-npm run commit       # Interactive commit
-gh pr create         # Create PR
+npm run commit       # 交互式提交
+gh pr create         # 创建PR
+```
+
+## TypeScript 类型定义示例
+
+### 登录表单类型
+
+遵循项目代码风格的登录表单类型定义：
+
+```typescript
+// 登录表单数据
+interface LoginFormData {
+  email: string;
+  password: string;
+  rememberMe?: boolean;
+}
+
+// 登录表单状态（遵循UI状态规则）
+interface LoginFormState {
+  isLoading: boolean;
+  error: string | null;
+  data: LoginResponse | null;
+}
+
+// 登录响应
+interface LoginResponse {
+  token: string;
+  user: {
+    id: string;
+    email: string;
+    name: string;
+  };
+}
 ```

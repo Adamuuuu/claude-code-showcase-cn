@@ -1,66 +1,66 @@
-# Claude Code Settings Documentation
+# Claude Code 设置文档
 
-## Environment Variables
+## 环境变量
 
-- `INSIDE_CLAUDE_CODE`: "1" - Indicates code is running inside Claude Code
-- `BASH_DEFAULT_TIMEOUT_MS`: Default timeout for bash commands (7 minutes)
-- `BASH_MAX_TIMEOUT_MS`: Maximum timeout for bash commands
+- `INSIDE_CLAUDE_CODE`: "1" - 表示代码在Claude Code内运行
+- `BASH_DEFAULT_TIMEOUT_MS`: bash命令的默认超时时间（7分钟）
+- `BASH_MAX_TIMEOUT_MS`: bash命令的最大超时时间
 
 ## Hooks
 
 ### UserPromptSubmit
 
-- **Skill Evaluation**: Analyzes prompts and suggests relevant skills
-  - **Script**: `.claude/hooks/skill-eval.sh`
-  - **Behavior**: Matches keywords, file paths, and patterns to suggest skills
+- **技能评估**: 分析提示并建议相关技能
+  - **脚本**: `.claude/hooks/skill-eval.sh`
+  - **行为**: 匹配关键词、文件路径和模式以建议技能
 
 ### PreToolUse
 
-- **Main Branch Protection**: Prevents edits on main branch (5s timeout)
-  - **Triggers**: Before editing files with Edit, MultiEdit, or Write tools
-  - **Behavior**: Blocks file edits when on main branch, suggests creating feature branch
+- **主分支保护**: 防止在主分支上编辑（5秒超时）
+  - **触发**: 在使用Edit、MultiEdit或Write工具编辑文件之前
+  - **行为**: 在主分支上阻止文件编辑，建议创建特性分支
 
 ### PostToolUse
 
-1. **Code Formatting**: Auto-format JS/TS files (30s timeout)
-   - **Triggers**: After editing `.js`, `.jsx`, `.ts`, `.tsx` files
-   - **Command**: `npx prettier --write` (or Biome)
-   - **Behavior**: Formats code, shows feedback if errors found
+1. **代码格式化**: 自动格式化JS/TS文件（30秒超时）
+   - **触发**: 在编辑`.js`、`.jsx`、`.ts`、`.tsx`文件之后
+   - **命令**: `npx prettier --write`（或Biome）
+   - **行为**: 格式化代码，如果发现错误则显示反馈
 
-2. **NPM Install**: Auto-install after package.json changes (60s timeout)
-   - **Triggers**: After editing `package.json` files
-   - **Command**: `npm install`
-   - **Behavior**: Installs dependencies, fails edit if installation fails
+2. **NPM安装**: package.json更改后自动安装（60秒超时）
+   - **触发**: 在编辑`package.json`文件之后
+   - **命令**: `npm install`
+   - **行为**: 安装依赖，如果安装失败则编辑失败
 
-3. **Test Runner**: Run tests after test file changes (90s timeout)
-   - **Triggers**: After editing `.test.js`, `.test.jsx`, `.test.ts`, `.test.tsx` files
-   - **Command**: `npm test -- --findRelatedTests <file> --passWithNoTests`
-   - **Behavior**: Runs related tests, shows results, non-blocking
+3. **测试运行器**: 测试文件更改后运行测试（90秒超时）
+   - **触发**: 在编辑`.test.js`、`.test.jsx`、`.test.ts`、`.test.tsx`文件之后
+   - **命令**: `npm test -- --findRelatedTests <file> --passWithNoTests`
+   - **行为**: 运行相关测试，显示结果，非阻塞
 
-4. **TypeScript Check**: Type-check TS/TSX files (30s timeout)
-   - **Triggers**: After editing `.ts`, `.tsx` files
-   - **Command**: `npx tsc --noEmit`
-   - **Behavior**: Shows first errors only, non-blocking
+4. **TypeScript检查**: TS/TSX文件类型检查（30秒超时）
+   - **触发**: 在编辑`.ts`、`.tsx`文件之后
+   - **命令**: `npx tsc --noEmit`
+   - **行为**: 仅显示首个错误，非阻塞
 
-## Hook Response Format
+## Hook响应格式
 
 ```json
 {
-  "feedback": "Message to show",
+  "feedback": "要显示的消息",
   "suppressOutput": true,
   "block": true,
   "continue": false
 }
 ```
 
-## Environment Variables in Hooks
+## Hook中的环境变量
 
-- `$CLAUDE_TOOL_INPUT_FILE_PATH`: File being edited
-- `$CLAUDE_TOOL_NAME`: Tool being used
-- `$CLAUDE_PROJECT_DIR`: Project root directory
+- `$CLAUDE_TOOL_INPUT_FILE_PATH`: 正在编辑的文件
+- `$CLAUDE_TOOL_NAME`: 正在使用的工具
+- `$CLAUDE_PROJECT_DIR`: 项目根目录
 
-## Exit Codes
+## 退出码
 
-- `0`: Success
-- `1`: Non-blocking error (shows feedback)
-- `2`: Blocking error (PreToolUse only - blocks the action)
+- `0`: 成功
+- `1`: 非阻塞错误（显示反馈）
+- `2`: 阻塞错误（仅限PreToolUse - 阻止操作）

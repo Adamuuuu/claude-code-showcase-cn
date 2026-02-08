@@ -1,96 +1,101 @@
 ---
-description: Work on a JIRA/Linear ticket end-to-end
+description: 端到端处理JIRA/Linear工单
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(gh:*), Bash(npm:*), mcp__jira__*, mcp__github__*, mcp__linear__*
 ---
 
-# Ticket Workflow
+# 工单工作流
 
-Work on ticket: $ARGUMENTS
+处理工单：$ARGUMENTS
 
-## Instructions
+## 说明
 
-### 1. Read the Ticket
+### 1. 读取工单
 
-First, fetch and understand the ticket:
+首先，获取并理解工单：
 
 ```
-Use the JIRA/Linear MCP tools to:
-- Get ticket details (title, description, acceptance criteria)
-- Check linked tickets or epics
-- Review any comments or attachments
+使用JIRA/Linear MCP工具：
+- 获取工单详情（标题、描述、验收标准）
+- 检查链接的工单或epics
+- 查看任何评论或附件
 ```
 
-Summarize:
-- What needs to be done
-- Acceptance criteria
-- Any blockers or dependencies
+总结：
 
-### 2. Explore the Codebase
+- 需要做什么
+- 验收标准
+- 任何阻止或依赖关系
 
-Before coding:
-- Search for related code
-- Understand the current implementation
-- Identify files that need changes
+### 2. 探索代码库
 
-### 3. Create a Branch
+在编码前：
+
+- 搜索相关代码
+- 理解当前实现
+- 识别需要更改的文件
+
+### 3. 创建分支
 
 ```bash
 git checkout -b {initials}/{ticket-id}-{brief-description}
 ```
 
-### 4. Implement the Changes
+### 4. 实施更改
 
-- Follow project patterns (check relevant skills)
-- Write tests first (TDD)
-- Make incremental commits
+- 遵循项目模式（检查相关技能）
+- 先写测试（TDD）
+- 进行增量提交
 
-### 5. Update the Ticket
+### 5. 更新工单
 
-As you work:
-- Add comments with progress updates
-- Update status (In Progress → In Review)
-- Log any blockers or questions
+在工作时：
 
-### 6. Create PR and Link
+- 添加进度更新注释
+- 更新状态（进行中 → 待审查）
+- 记录任何阻止或问题
 
-When ready:
-- Create PR with `gh pr create`
-- Link the PR to the ticket
-- Add ticket ID to PR title: `feat(PROJ-123): description`
+### 6. 创建PR并链接
 
-### 7. If You Find a Bug
+准备好时：
 
-If you discover an unrelated bug while working:
-1. Create a new ticket with details
-2. Link it to the current ticket if related
-3. Note it in the PR description
-4. Continue with original task
+- 使用`gh pr create`创建PR
+- 将PR链接到工单
+- 将工单ID添加到PR标题：`feat(PROJ-123): description`
 
-## Example Workflow
+### 7. 如果您发现Bug
+
+如果在工作时发现无关的bug：
+
+1. 使用详情创建新工单
+2. 如果相关，将其链接到当前工单
+3. 在PR描述中注明
+4. 继续原始任务
+
+## 工作流示例
 
 ```
 Me: /ticket PROJ-123
 
 Claude:
-1. Fetching PROJ-123 from JIRA...
-   Title: Add user profile avatar upload
-   Description: Users should be able to upload a profile picture...
-   Acceptance Criteria:
-   - [ ] Upload button on profile page
-   - [ ] Support JPG/PNG up to 5MB
-   - [ ] Show loading state during upload
+1. 从JIRA获取PROJ-123...
+   标题：向个人档案页面添加用户档案头像上传
+   描述：用户应该能够上传个人资料照片...
+   验收标准：
+   - [ ] 个人档案页面上的上传按钮
+   - [ ] 支持JPG/PNG，最大5MB
+   - [ ] 在上传期间显示加载状态
 
-2. Searching codebase for profile-related code...
-   Found: src/screens/Profile/ProfileScreen.tsx
-   Found: src/components/Avatar/Avatar.tsx
+2. 搜索代码库中与个人档案相关的代码...
+   找到：src/screens/Profile/ProfileScreen.tsx
+   找到：src/components/Avatar/Avatar.tsx
 
-3. Creating branch: cw/PROJ-123-avatar-upload
+3. 创建分支：cw/PROJ-123-avatar-upload
 
-4. [Implements feature with TDD approach]
+4. [使用TDD方法实施功能]
 
-5. Updating JIRA status to "In Review"...
-   Adding comment: "Implementation complete, PR ready for review"
+5. 将JIRA状态更新为"待审查"...
+   添加评论："实施完成，PR已准备好审查"
 
-6. Creating PR and linking to PROJ-123...
-   PR #456 created: feat(PROJ-123): add avatar upload to profile
+6. 创建PR并链接到PROJ-123...
+   PR #456已创建：feat(PROJ-123): 向档案添加头像上传
 ```
