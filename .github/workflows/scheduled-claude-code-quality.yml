@@ -18,6 +18,7 @@ concurrency:
 permissions:
   contents: write
   pull-requests: write
+  id-token: write
 
 jobs:
   select-directories:
@@ -87,13 +88,16 @@ jobs:
         env:
           ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
         with:
+          mode: agent
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           model: claude-opus-4-5-20251101
           timeout_minutes: 45
           base_branch: main
           branch_prefix: claude/code-quality-
-          track_progress: true
-          prompt: |
+          max_turns: 35
+          allowed_tools: "Read,Write,Edit,Glob,Grep,Bash(git:*),Bash(gh:*),Bash(npm run lint*)"
+          custom_instructions: |
             # Weekly Code Quality Review
 
             You are performing a scheduled code quality review of a specific directory.
@@ -138,9 +142,6 @@ jobs:
             - Fix issues that are clear improvements
             - Don't refactor working code just for style
             - If no issues found, report that and skip PR creation
-          claude_args: |
-            --max-turns 35
-            --allowedTools "Read,Write,Edit,Glob,Grep,Bash(git:*),Bash(gh:*),Bash(npm run lint*)"
 
   report-completion:
     needs: [select-directories, review-directory]
