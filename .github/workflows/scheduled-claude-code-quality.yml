@@ -18,6 +18,7 @@ concurrency:
 permissions:
   contents: write
   pull-requests: write
+  id-token: write
 
 jobs:
   select-directories:
@@ -92,8 +93,9 @@ jobs:
           timeout_minutes: 45
           base_branch: main
           branch_prefix: claude/code-quality-
-          track_progress: true
-          prompt: |
+          max_turns: 35
+          allowed_tools: "Read,Write,Edit,Glob,Grep,Bash(git:*),Bash(gh:*),Bash(npm run lint*)"
+          custom_instructions: |
             # Weekly Code Quality Review
 
             You are performing a scheduled code quality review of a specific directory.
@@ -138,9 +140,6 @@ jobs:
             - Fix issues that are clear improvements
             - Don't refactor working code just for style
             - If no issues found, report that and skip PR creation
-          claude_args: |
-            --max-turns 35
-            --allowedTools "Read,Write,Edit,Glob,Grep,Bash(git:*),Bash(gh:*),Bash(npm run lint*)"
 
   report-completion:
     needs: [select-directories, review-directory]
